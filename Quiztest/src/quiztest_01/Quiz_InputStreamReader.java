@@ -5,16 +5,45 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
 public class Quiz_InputStreamReader {
 	public static void main(String[] args) {
-	
-		System.out.println("수도(퀴즈)게임을 시작하시겠습니까? Yes or No");
+		DbQuizDao dao = DbQuizDaoImpl.getInstance();
 		Scanner scan = new Scanner(System.in);
+		//로그인 기능
+		int id = 0;//아이디, 아이디 값은 추후 사용될 예정이므로 바깥으로 빼낸다.
+		String password = null;
+		while(true) {
+			System.out.println("아이디를 입력하세요.");
+			id = scan.nextInt();
+			System.out.println("패스워드를 입력하세요.");
+			password = scan.next();
+			User user = null;
+			try {
+				user = dao.findById(id);
+				if (user == null || !user.getPassword().equals(password)) {//아이디가 존재하지 않거나, 비밀번호가 틀린 경우
+					System.out.println("등록되지 않은 아이디이거나 잘못된 비밀번호입니다. 다시 입력하세요.");
+				} else {//아이디가 존재하고 비밀번호가 맞는 경우
+					System.out.println("로그인 성공. 잠시 후 퀴즈가 시작됩니다.");
+					break;
+				}
+			} catch (ClassNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		//로그인 되었으니 퀴즈를 진행한다.
+		int sco = 0;
+		System.out.println("수도(퀴즈)게임을 시작하시겠습니까? Yes or No");
 		while(true) {
 			String yesno_cheek = scan.next();
 			if(yesno_cheek.equals("yes")||yesno_cheek.equals("Yes")) {
@@ -84,7 +113,6 @@ public class Quiz_InputStreamReader {
 			c3[9] = "캄팔라";
 			
 			int answer = 1;
-			int sco = 0;
 			
 			System.out.println("첫번째 문제: "+m[0]);
 			System.out.println("1."+c[0]);
@@ -93,6 +121,7 @@ public class Quiz_InputStreamReader {
 			System.out.println("4."+c3[0]);
 			
 			System.out.println("정답을 선택해주세요");
+			scan.nextLine();
 			String input = scan.nextLine();
 			int inputN = Integer.parseInt(input);
 			
@@ -274,6 +303,80 @@ public class Quiz_InputStreamReader {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		//위에서 얻은 id와 총합 점수 sco를 가지고 티어와 랭킹을 구해서 users_tier 테이블에 넣는 코드를 구현.
+		//UserScore에 아이디와 총합 점수를 이용 객체를 만든다. (나머지 변수는 기본값으로 놔둔다.)
+		UserScore userScore = new UserScore();
+		userScore.setId(id);
+		userScore.setScore(sco);
+		
+		//일단 이 두 값을 먼저 테이블에 담는다.
+		try {
+			dao.insertTier(userScore);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//티어와 랭킹을 정해주고 그걸 users_tier에 업데이트 형식으로 담는다.
+		//(이 부분은 InsertTier에 만들어놓은 코드 그대로 복붙해서 활용할께요.)
+		List<UserScore> usr = null;
+		try {
+			usr = dao.findTierAll();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//순위를 매기기 위해 점수만 뽑아서 내림차순으로 정렬할 리스트와 랭킹을 담을 리스트를 만든다.
+		List<Integer> scoreList = new ArrayList<Integer>();
+		List<Integer> rankList = new ArrayList<Integer>();
+		for (int i = 0; i < usr.size(); i++) {
+			scoreList.add(usr.get(i).getScore());
+		}
+		Collections.sort(scoreList, Collections.reverseOrder());
+		for (int i = 0; i < scoreList.size(); i++) {
+			int check = 0;
+			for (int j = 0; j < i; j++) {
+				if(scoreList.get(i)==scoreList.get(j)) {
+					check++;
+				}
+			}
+			rankList.add((i+1)-check);
+		}
+
+		for (int i = 0; i < usr.size(); i++) {
+			for (int j = 0; j < scoreList.size(); j++) {
+				if(scoreList.get(j) == usr.get(i).getScore()) {
+					usr.get(i).setRank(rankList.get(j));
+					break;
+				}
+			}
+		}
+		//티어정보를 넣는다.
+		for (UserScore u : usr) {
+			if(u.getScore()>= 80 && u.getScore()<=100) {
+				u.setTier("Diamond");
+			} else if (u.getScore()>=60) {
+				u.setTier("Platinum");
+			} else if (u.getScore()>=40) {
+				u.setTier("Gold");
+			} else if (u.getScore()>=20) {
+				u.setTier("Silver");
+			} else {
+				u.setTier("Bronze");
+			}
+		}
+
+		try {
+			for(UserScore u : usr ) {
+				dao.updateTier(u);
+			}
+			System.out.println("삽입완료");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
 	}
