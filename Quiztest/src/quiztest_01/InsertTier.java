@@ -68,11 +68,11 @@ public class InsertTier {
 			} else if (u.getScore()>=60) {
 				u.setTier("Platinum");
 			} else if (u.getScore()>=40) {
-				u.setTier("Silver");
+				u.setTier("Gold");
 			} else if (u.getScore()>=20) {
-				u.setTier("Bronze");
+				u.setTier("Silver");
 			} else {
-				u.setTier("Beginner");
+				u.setTier("Bronze");
 			}
 		}
 
