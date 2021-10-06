@@ -10,8 +10,8 @@ public class ClientMain {
 		try(Socket socket = new Socket("192.168.75.232", 7777)) {
 			
 			System.out.println("여기는 퀴즈 안내센터입니다. 더 이상의 문의가 없으시면 'q'를 입력해주세요");
-			
-			System.out.println("FAQ - 원하시는 문의의 번호를 입력하세요");
+			System.out.println();
+			System.out.println("*FAQ - 원하시는 문의의 번호를 입력하세요*");
 			System.out.println("1.총 몇문제 인가요?");
 			System.out.println("2.티어는 어떻게 구분되나요?");
 			ClientReceiver clientReceiver = new ClientReceiver(socket);

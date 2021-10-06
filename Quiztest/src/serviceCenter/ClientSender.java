@@ -27,6 +27,7 @@ public class ClientSender extends Thread {
 			
 			
 			Scanner scan = new Scanner(System.in);
+			System.out.println();
 			System.out.println("문의사항을 입력해주세요");
 			
 			while(true) {
