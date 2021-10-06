@@ -11,4 +11,8 @@ public interface DbQuizDao {
 	public int deleteUser(int id) throws ClassNotFoundException, SQLException;
 	//아이디로 정보찾기
 	public User findById(int id) throws ClassNotFoundException, SQLException;
+	//티어정보 등록
+	public int insertTier(UserScore userScore) throws ClassNotFoundException, SQLException;
+	//아이디로 티어조회
+	public UserScore findTierById(int id) throws ClassNotFoundException, SQLException;
 }

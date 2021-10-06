@@ -3,20 +3,21 @@ package quiztest_01;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class DeleteUser {
+public class SelectTier {
 	public static void main(String[] args) {
+		//id로 티어 조회
 		DbQuizDao dao = DbQuizDaoImpl.getInstance();
-
+		
 		Scanner scan = new Scanner(System.in);
-		System.out.println("<회원탈퇴>");
+		System.out.println("<티어조회>");
 		System.out.println("등록된 아이디를 입력하세요.");
 		int id = 0;
-		
+		User usercheck = null;
 		while(true) {
 			id = scan.nextInt();
 
 			try {
-				User usercheck = dao.findById(id);
+				usercheck = dao.findById(id);
 				if (usercheck == null) {
 					System.out.println("등록되지 않은 아이디입니다. 다시 입력하세요.");
 				} else {
@@ -28,10 +29,15 @@ public class DeleteUser {
 				e1.printStackTrace();
 			}
 		}
-
+		
 		try {
-			dao.deleteUser(id);
-			System.out.println("회원탈퇴완료");
+			UserScore usT = dao.findTierById(id);
+			if(usT != null) {
+				System.out.println(usercheck.getNickname()+"("+usT.getId()+")의 티어정보");
+				System.out.println(usT);
+			} else {
+				System.out.println("정보없음");
+			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {

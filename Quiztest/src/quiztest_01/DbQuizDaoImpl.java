@@ -69,19 +69,20 @@ public class DbQuizDaoImpl implements DbQuizDao {
 		}
 	}
 	@Override
-	public int insertTier(UserTier userTier) throws ClassNotFoundException, SQLException {
+	public int insertTier(UserScore userScore) throws ClassNotFoundException, SQLException {
 		String sql = "insert into users_tier values(?, ?, ?, ?)";
 		try(Connection conn = DbConn.getConn();
 				PreparedStatement pst = conn.prepareStatement(sql)){
-			pst.setInt(1, userTier.getId());
-			pst.setInt(2, userTier.getScore());
-			pst.setString(3, userTier.getTier());
-			pst.setInt(4, userTier.getRank());
+			pst.setInt(1, userScore.getId());
+			pst.setInt(2, userScore.getScore());
+			pst.setString(3, userScore.getTier());
+			pst.setInt(4, userScore.getRank());
+			
+			return pst.executeUpdate();
 		}
-		return 0;
 	}
 	@Override
-	public UserTier findTierById(int id) throws ClassNotFoundException, SQLException {
+	public UserScore findTierById(int id) throws ClassNotFoundException, SQLException {
 		String sql = "select * from users_tier where user_id=?";
 		try(Connection conn = DbConn.getConn();
 				PreparedStatement pst = conn.prepareStatement(sql)){
@@ -89,7 +90,7 @@ public class DbQuizDaoImpl implements DbQuizDao {
 			
 			try(ResultSet rs = pst.executeQuery()){
 				if(rs.next()) {
-					return new UserTier(rs.getInt("user_id"), 
+					return new UserScore(rs.getInt("user_id"), 
 							rs.getInt("score"), 
 							rs.getString("tier"), 
 							rs.getInt("rank"));
