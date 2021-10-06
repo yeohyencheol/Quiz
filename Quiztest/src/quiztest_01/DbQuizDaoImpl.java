@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbQuizDaoImpl implements DbQuizDao {
 	private static DbQuizDaoImpl instance = new DbQuizDaoImpl();
@@ -78,6 +80,7 @@ public class DbQuizDaoImpl implements DbQuizDao {
 			pst.setString(3, userScore.getTier());
 			pst.setInt(4, userScore.getRank());
 			
+			
 			return pst.executeUpdate();
 		}
 	}
@@ -93,11 +96,41 @@ public class DbQuizDaoImpl implements DbQuizDao {
 					return new UserScore(rs.getInt("user_id"), 
 							rs.getInt("score"), 
 							rs.getString("tier"), 
-							rs.getInt("rank"));
+							rs.getInt("ranking"));
 				} else {
 					return null;
 				}
 			}
+		}
+	}
+	@Override
+	public List<UserScore> findTierAll() throws ClassNotFoundException, SQLException {
+		String sql = "select * from users_tier";
+		try(Connection conn = DbConn.getConn();
+				PreparedStatement pst = conn.prepareStatement(sql);
+				ResultSet rs = pst.executeQuery()){
+			List<UserScore> userScList = new ArrayList<UserScore>();
+			while(rs.next()) {
+				userScList.add(new UserScore(rs.getInt("user_id"), 
+						rs.getInt("score"), 
+						rs.getString("tier"), 
+						rs.getInt("ranking")));
+			}
+			return userScList;
+		}
+	}
+	@Override
+	public int updateTier(UserScore userScore) throws ClassNotFoundException, SQLException {
+		String sql = "update users_tier set score=?, ranking=?, tier=? where user_id=?";
+		
+		try(Connection conn = DbConn.getConn();
+				PreparedStatement pst = conn.prepareStatement(sql)){
+			pst.setInt(1, userScore.getScore());
+			pst.setInt(2, userScore.getRank());
+			pst.setString(3, userScore.getTier());
+			pst.setInt(4, userScore.getId());
+			
+			return pst.executeUpdate();
 		}
 	}
 	

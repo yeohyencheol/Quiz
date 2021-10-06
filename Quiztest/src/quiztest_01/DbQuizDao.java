@@ -1,6 +1,7 @@
 package quiztest_01;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface DbQuizDao {
 	//회원등록
@@ -15,4 +16,8 @@ public interface DbQuizDao {
 	public int insertTier(UserScore userScore) throws ClassNotFoundException, SQLException;
 	//아이디로 티어조회
 	public UserScore findTierById(int id) throws ClassNotFoundException, SQLException;
+	//티어테이블 전체조회
+	public List<UserScore> findTierAll() throws ClassNotFoundException, SQLException;
+	//티어테이블 수정
+	public int updateTier(UserScore userScore) throws ClassNotFoundException, SQLException;
 }
