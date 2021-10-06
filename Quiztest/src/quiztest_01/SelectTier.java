@@ -13,6 +13,7 @@ public class SelectTier {
 		System.out.println("등록된 아이디를 입력하세요.");
 		int id = 0;
 		User usercheck = null;
+		
 		while(true) {
 			id = scan.nextInt();
 
