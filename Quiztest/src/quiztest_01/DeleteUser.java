@@ -11,7 +11,7 @@ public class DeleteUser {
 		System.out.println("<회월탈퇴>");
 		System.out.println("등록된 아이디를 입력하세요.");
 		int id = 0;
-
+		
 		while(true) {
 			id = scan.nextInt();
 
