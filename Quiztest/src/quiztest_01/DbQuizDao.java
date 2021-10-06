@@ -1,0 +1,14 @@
+package quiztest_01;
+
+import java.sql.SQLException;
+
+public interface DbQuizDao {
+	//회원등록
+	public int insertUser(User user) throws ClassNotFoundException, SQLException;
+	//회원정보수정
+	public int updateUser(User user) throws ClassNotFoundException, SQLException;
+	//회원탈퇴
+	public int deleteUser(int id) throws ClassNotFoundException, SQLException;
+	//아이디로 정보찾기
+	public User findById(int id) throws ClassNotFoundException, SQLException;
+}
