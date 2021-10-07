@@ -18,6 +18,59 @@ public class Quiz_InputStreamReader {
 	public static void main(String[] args) {
 		DbQuizDao dao = DbQuizDaoImpl.getInstance();
 		Scanner scan = new Scanner(System.in);
+		//회원가입
+		System.out.println("회원가입을 진행합니다. 등록된 아이디가 있습니까?");
+		System.out.println("등록된 아이디가 있으면 y, 없으면 n");
+		System.out.println("(등록된 아이디가 있으면 로그인을 바로 진행하고, 아이디가 없으면 회원가입을 진행합니다.)");
+		String joinAns = scan.next();
+		while(true) {
+			if(joinAns.equals("y") || joinAns.equals("Y")) {
+				System.out.println("로그인을 진행합니다.");
+				break;
+			} else if (joinAns.equals("n") || joinAns.equals("N")) {
+				System.out.println("회원가입을 진행합니다.");
+				
+				String regId = null;
+				System.out.println("아이디를 입력하세요.");
+				while(true) {
+					regId = scan.next();
+					
+					try {
+						User usercheck = dao.findById(regId);
+						if(usercheck != null) {
+							System.out.println("중복된 아이디입니다. 다시 입력하세요.");
+						} else {
+							break;
+						}
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				System.out.println("패스워드를 입력하세요.");
+				String regPassword = scan.next();
+				System.out.println("닉네임을 입력하세요.");
+				String regNickname = scan.next();
+				
+				User user = new User(regId, regPassword, regNickname);
+				
+				try {
+					dao.insertUser(user);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
+				System.out.println("회원가입이 완료되었습니다. 등록된 아이디와 비밀번호로 로그인을 하십시오.");
+				break;
+			} else {
+				System.out.println("잘못 입력하셨습니다. 다시 입력하세요.");
+				System.out.println();
+			}
+		}
+		
 		//로그인 기능
 		String id = null;//아이디, 아이디 값은 추후 사용될 예정이므로 바깥으로 빼낸다.
 		String password = null;
@@ -310,9 +363,15 @@ public class Quiz_InputStreamReader {
 		userScore.setId(id);
 		userScore.setScore(sco);
 		
-		//일단 이 두 값을 먼저 테이블에 담는다.
+		//id로 테이블에 데이터가 들어가있는지 확인한 후, 테이블에 이미 값이 들어가있으면
+		//점수를 업데이트하고, 값이 없으면 새로 등록한다.
 		try {
-			dao.insertTier(userScore);
+			UserScore usCheck = dao.findTierById(id);
+			if(usCheck == null) {
+				dao.insertTier(userScore);
+			} else {
+				dao.updateTier(userScore);
+			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
