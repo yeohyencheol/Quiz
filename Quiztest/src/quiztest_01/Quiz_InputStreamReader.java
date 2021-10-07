@@ -381,7 +381,3 @@ public class Quiz_InputStreamReader {
 		
 	}
 }
-		
-	
-		
-						
