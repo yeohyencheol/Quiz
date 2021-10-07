@@ -20,7 +20,7 @@ public class DbQuizDaoImpl implements DbQuizDao {
 		try(Connection conn = DbConn.getConn();
 				PreparedStatement pst = conn.prepareStatement(sql)){
 			
-			pst.setString(1, user.getId());;
+			pst.setString(1, user.getId());
 			pst.setString(2, user.getPassword());
 			pst.setString(3, user.getNickname());
 			
