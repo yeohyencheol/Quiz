@@ -11,11 +11,10 @@ public class SelectTier {
 		Scanner scan = new Scanner(System.in);
 		System.out.println("<티어조회>");
 		System.out.println("등록된 아이디를 입력하세요.");
-		int id = 0;
+		String id = null;
 		User usercheck = null;
-		
 		while(true) {
-			id = scan.nextInt();
+			id = scan.next();
 
 			try {
 				usercheck = dao.findById(id);

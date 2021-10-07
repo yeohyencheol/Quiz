@@ -1,24 +1,24 @@
 package quiztest_01;
 
 public class UserScore {
-	private int id;
+	private String id;
 	private int score;
 	private String tier;
 	private int rank;
 	public UserScore() {
 		super();
 	}
-	public UserScore(int id, int score, String tier, int rank) {
+	public UserScore(String id, int score, String tier, int rank) {
 		super();
 		this.id = id;
 		this.score = score;
 		this.tier = tier;
 		this.rank = rank;
 	}
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public int getScore() {

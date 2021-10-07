@@ -8,10 +8,10 @@ public class UserInsert {
 		DbQuizDao dao = DbQuizDaoImpl.getInstance();
 		
 		Scanner scan = new Scanner(System.in);
-		int id = 0;
-		System.out.println("아이디를 입력하세요.(숫자로만)");
+		String id = null;
+		System.out.println("아이디를 입력하세요.");
 		while(true) {
-			id = scan.nextInt();
+			id = scan.next();
 			
 			try {
 				User usercheck = dao.findById(id);
